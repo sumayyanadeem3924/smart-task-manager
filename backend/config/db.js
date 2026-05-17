@@ -1,7 +1,12 @@
 const { Sequelize } = require("sequelize");
-require("dotenv").config();
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
+const dbUrl = process.env.DATABASE_URL;
+
+if (!dbUrl) {
+  throw new Error("DATABASE_URL is missing");
+}
+
+const sequelize = new Sequelize(dbUrl, {
   dialect: "postgres",
   protocol: "postgres",
   dialectOptions: {
@@ -12,14 +17,5 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
   },
   logging: false,
 });
-
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log("Database connected successfully");
-  })
-  .catch((err) => {
-    console.error("Database connection error:", err);
-  });
 
 module.exports = sequelize;
